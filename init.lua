@@ -17,16 +17,21 @@ vim.opt.rtp:prepend(lazypath)
 
 --Initialize Lazy and Plugins
 require('lazy').setup({
+  -- Plugin Folder --
   { import = 'jaycel.plugins' },
-
   --Plugins that don't require any configuration
-
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
+
+  -- Navigating Files
+  'theprimeagen/harpoon',
+
+  -- UndoTree
+  'mbbill/undotree',
 
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim',   opts = {} },
@@ -40,8 +45,18 @@ require('lazy').setup({
     opts = {},
   },
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',     opts = {} },
 
+  -- LSP Related --
+  { 'VonHeikemen/lsp-zero.nvim', branch = 'v3.x' },
+  'hrsh7th/nvim-cmp',
+  'hrsh7th/cmp-nvim-lsp',
+  'hrsh7th/cmp-buffer',
+  'hrsh7th/cmp-path',
+  'saadparwaiz1/cmp_luasnip',
+  'hrsh7th/cmp-nvim-lua',
+  'L3MON4D3/LuaSnip',
+  'rafamadriz/friendly-snippets',
 }, {})
 
 --Source Settings
@@ -63,12 +78,12 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+  clangd = {},
+  gopls = {},
+  pyright = {},
+  rust_analyzer = {},
+  tsserver = {},
+  html = { filetypes = { 'html', 'twig', 'hbs' } },
 
   lua_ls = {
     Lua = {

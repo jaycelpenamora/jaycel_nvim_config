@@ -3,7 +3,6 @@
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
-vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -277,3 +276,15 @@ cmp.setup {
 		{ name = 'path' },
 	},
 }
+-- [[ Harpoon Remaps ]] --
+local mark = require("harpoon.mark")
+local ui = require("harpoon.ui")
+
+vim.keymap.set('n', "<leader>ha", mark.add_file)
+vim.keymap.set('n', "<C-e>", ui.toggle_quick_menu)
+
+-- [[ Undotree ]] --
+vim.keymap.set('n', "<leader>u", vim.cmd.UndotreeToggle)
+
+-- [[ Fugitive ]] --
+vim.keymap.set('n', "<leader>gs", vim.cmd.Git)
