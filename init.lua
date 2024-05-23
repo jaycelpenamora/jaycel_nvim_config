@@ -27,6 +27,7 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+
   -- UndoTree
   'mbbill/undotree',
 
@@ -43,7 +44,8 @@ require('lazy').setup({
   },
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim',     opts = {} },
-
+  --Idk why I need this
+  'nvim-neotest/nvim-nio',
   -- LSP Related --
   { 'VonHeikemen/lsp-zero.nvim', branch = 'v3.x' },
   'hrsh7th/nvim-cmp',
