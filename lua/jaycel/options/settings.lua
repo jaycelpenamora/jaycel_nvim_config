@@ -77,3 +77,14 @@ vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
+
+--For vim-closetag
+vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.php'
+vim.g.closetag_filetypes = 'html,xhtml,phtml,php'
+vim.g.closetag_shortcut = '>'
+vim.g.closetag_close_shortcut = '/'
+vim.g.closetag_regions = {
+	['typescript.tsx'] = 'jsxRegion,tsxRegion',
+	['javascript.jsx'] = 'jsxRegion',
+	['php'] = 'phpRegion',
+}
