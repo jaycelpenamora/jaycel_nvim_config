@@ -66,7 +66,7 @@ require 'jaycel.options.settings'
 require 'jaycel.options.remaps'
 
 -- mason-lspconfig requires that these setup functions are called in this order
--- before setting up the servers.
+
 require('mason').setup()
 require('mason-lspconfig').setup()
 
@@ -77,7 +77,6 @@ local servers = {
   rust_analyzer = {},
   tsserver = {},
   html = { filetypes = { 'html', 'twig', 'hbs' } },
-
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -112,6 +111,26 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+
+-- Setup LSP
+local lspconfig = require('lspconfig')
+
+lspconfig.emmet_language_server.setup {
+  on_attach = function(client, bufnr)
+    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  end,
+  filetypes = { 'html', 'css', 'javascript', 'typescript', 'eruby', 'php' }, -- Add php here
+  init_options = {
+    html = {
+      options = {
+        -- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
+        ["bem.enabled"] = true,
+      }
+    }
+  }
+}
+
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
