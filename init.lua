@@ -58,6 +58,9 @@ require('lazy').setup({
   'hrsh7th/cmp-nvim-lua',
   'L3MON4D3/LuaSnip',
   'rafamadriz/friendly-snippets',
+  'neovim/nvim-lspconfig',
+  'jose-elias-alvarez/nvim-lsp-ts-utils',
+  'MunifTanjim/prettier.nvim',
 }, {})
 
 --Source Settings
@@ -184,6 +187,27 @@ cmp.setup {
     { name = 'path' },
   },
 }
+
+-- [[ Configure Prettier ]]
+local prettier = require("prettier")
+
+prettier.setup({
+  bin = 'prettier', -- or `'prettierd'` (v0.23.3+)
+  filetypes = {
+    "css",
+    "graphql",
+    "html",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "less",
+    "markdown",
+    "scss",
+    "typescript",
+    "typescriptreact",
+    "yaml",
+  },
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
