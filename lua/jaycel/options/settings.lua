@@ -79,10 +79,10 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 
 --For vim-closetag
-vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.php,*.jsx,*.tsx,*.js,*.ts,*.jsx'
-vim.g.closetag_xhtml_filenames = '*.html,*.xhtml,*.phtml,*.php,*.jsx,*.tsx,*.js,*.ts,*.jsx'
-vim.g.closetag_filetypes = 'html,xhtml,phtml,php,javascript,typescriptreact,javascriptreact,ph'
-vim.g.closetag_xhtml_filetypes = 'html,xhtml,phtml,php,javascript,typescriptreact,javascriptreact,ph'
+vim.g.closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.tsx,*.js,*.ts,*.jsx"
+vim.g.closetag_xhtml_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.tsx,*.js,*.ts,*.jsx"
+vim.g.closetag_filetypes = "html,xhtml,phtml,php,javascript,typescriptreact,javascriptreact,ph"
+vim.g.closetag_xhtml_filetypes = "html,xhtml,phtml,php,javascript,typescriptreact,javascriptreact,ph"
 vim.g.closetag_emptyTags_caseSensitive = 1
 vim.g.closetag_shortcut = '>'
 vim.g.closetag_close_shortcut = '/'
@@ -91,3 +91,9 @@ vim.g.closetag_regions = {
 	['javascript.jsx'] = 'jsxRegion',
 	['php'] = 'phpRegion',
 }
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	pattern = { "*.php" },
+	callback = function()
+		vim.bo.filetype = "phpfile.php"
+	end,
+})
