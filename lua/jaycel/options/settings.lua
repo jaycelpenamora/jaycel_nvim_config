@@ -97,3 +97,10 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 		vim.bo.filetype = "phpfile.php"
 	end,
 })
+-- Prettier configuration
+vim.g['prettier#autoformat'] = 1
+vim.g['prettier#autoformat_config_present'] = 1
+vim.g['prettier#exec_cmd_async'] = 1
+
+-- Auto-format on save for PHP files
+vim.cmd [[autocmd BufWritePre *.php Prettier]]

@@ -1,7 +1,8 @@
---Must happen before plugins are required (otherwise wrong leader will be used)
+-- Ensure that this section is before you require plugins
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
--- [[ Install `lazy.nvim` plugin manager ]]
+
+-- Install `lazy.nvim` plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -17,6 +18,13 @@ vim.opt.rtp:prepend(lazypath)
 
 --Initialize Lazy and Plugins
 require('lazy').setup({
+  -- DAP Related --
+  'mfussenegger/nvim-dap',
+  { 'theHamsta/nvim-dap-virtual-text', dependencies = { 'mfussenegger/nvim-dap' } },
+  { "rcarriga/nvim-dap-ui",            dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+  'williamboman/mason.nvim',
+  'jay-babu/mason-nvim-dap.nvim',
+
   -- Plugin Folder --
   { import = 'jaycel.plugins' },
   --Plugins that don't require any configuration
@@ -36,6 +44,7 @@ require('lazy').setup({
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim',   opts = {} },
 
+  { "folke/neodev.nvim",      opts = {} },
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
@@ -63,13 +72,119 @@ require('lazy').setup({
   'MunifTanjim/prettier.nvim',
 }, {})
 
---Source Settings
+-- PHP Debug Adapter Protocol (DAP) Configuration
+local dap = require('dap')
+local dapui = require('dapui')
+
+dap.adapters.php = {
+  type = 'executable',
+  command = 'node',
+  args = { '/home/jaycel/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js' }
+}
+
+dap.configurations.php = {
+  {
+    type = 'php',
+    request = 'launch',
+    name = 'Listen for Xdebug',
+    port = 9003,
+    hostname = '0.0.0.0',
+  }
+}
+
+-- [[ Mason nvim dap]]
+require("mason").setup()
+require('mason-nvim-dap').setup {
+  automatic_setup = true,
+  handlers = {
+    function(config)
+      require('mason-nvim-dap').default_setup(config)
+    end,
+    php = function(config)
+      -- config.adapters = {
+      --   type = 'executable',
+      --   command = 'node',
+      --   args = {
+      --     '/home/jaycel/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js',
+      --   }
+      -- }
+      config.configurations = {
+        {
+          name = "Listen for Xdebug",
+          type = "php",
+          request = "launch",
+          port = 9003,
+          -- localSourceRoot = "/home/user/sites/vvv/www",
+          -- serverSourceRoot = "/srv/www",
+          localSourceRoot = vim.fn.expand("%:p:h") .. "/",
+          serverSourceRoot = vim.fn.expand("%:p:h") .. "/",
+          hostname = '0.0.0.0',
+        },
+        -- {
+        --   name = "Run current script",
+        --   type = "php",
+        --   request = "launch",
+        --   port = 9003,
+        --   cwd = "${fileDirname}",
+        --   program = "${file}",
+        --   runtimeExecutable = "php",
+        -- },
+      }
+      require('mason-nvim-dap').default_setup(config)
+    end,
+  },
+}
+
+function InsertXDebug()
+  local pos = vim.api.nvim_win_get_cursor(0)[2]
+  local line = vim.api.nvim_get_current_line()
+  local nline = line:sub(1, pos) .. "xdebug_break();" .. line:sub(pos + 1)
+  vim.api.nvim_set_current_line(nline)
+end
+
+-- Toggle Xdebug
+vim.keymap.set("n", "<leader>ds", "<cmd>lua InsertXDebug()<CR>")
+
+dapui.setup {
+  -- Customize icons
+  icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
+  controls = {
+    icons = {
+      disconnect = "",
+      pause = "",
+      play = "",
+      run_last = "",
+      step_back = "",
+      step_into = "",
+      step_out = "",
+      step_over = "",
+      terminate = ""
+    },
+  }
+}
+
+-- Toggle UI elements when triggering events
+dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+dap.listeners.before.event_terminated['dapui_config'] = dapui.close
+dap.listeners.before.event_exited['dapui_config'] = dapui.close
+
+-- Basic debugging keymaps
+vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
+vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
+vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
+vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
+vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+vim.keymap.set('n', '<leader>B', function()
+  dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+end, { desc = 'Debug: Set Breakpoint' })
+vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: Toggle UI' })
+
+-- Source Settings
 require 'jaycel.options.settings'
---Source Remaps
+-- Source Remaps
 require 'jaycel.options.remaps'
 
 -- mason-lspconfig requires that these setup functions are called in this order
-
 require('mason').setup()
 require('mason-lspconfig').setup()
 
@@ -133,7 +248,6 @@ lspconfig.emmet_language_server.setup {
     }
   }
 }
-
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
