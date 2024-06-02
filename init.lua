@@ -71,7 +71,7 @@ require('lazy').setup({
   'L3MON4D3/LuaSnip',
   'rafamadriz/friendly-snippets',
   'neovim/nvim-lspconfig',
-  'jose-elias-alvarez/nvim-lsp-ts-utils',
+  'jose-elias-alvarez/null-ls.nvim',
   'MunifTanjim/prettier.nvim',
   "j-hui/fidget.nvim",
 }, {})
@@ -192,8 +192,6 @@ mason_lspconfig.setup {
     'clangd',
     'html',
     'lua_ls',
-    'phpactor',
-    'intelephense',
     'pyright',
     'rust_analyzer',
     'tsserver',
@@ -263,8 +261,6 @@ lspconfig.phpactor.setup {
   root_dir = get_php_root_dir,
 }
 
-
-
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
 local cmp = require 'cmp'
@@ -322,6 +318,7 @@ cmp.setup {
   },
 }
 
+
 -- [[ Configure Prettier ]]
 local prettier = require("prettier")
 
@@ -346,3 +343,4 @@ prettier.setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+-- vim: ts=2 sts=2 sw=2 et sts=2 sw=2 et

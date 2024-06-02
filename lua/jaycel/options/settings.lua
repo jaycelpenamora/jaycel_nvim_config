@@ -97,11 +97,3 @@ vim.g.closetag_regions = {
 	['javascript.jsx'] = 'jsxRegion',
 	['php'] = 'phpRegion',
 }
-
--- Prettier configuration
-vim.g['prettier#autoformat'] = 1
-vim.g['prettier#autoformat_config_present'] = 1
-vim.g['prettier#exec_cmd_async'] = 1
-
--- Auto-format on save for PHP files
-vim.cmd [[autocmd BufWritePre *.php Prettier]]
