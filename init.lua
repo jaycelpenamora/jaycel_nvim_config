@@ -73,6 +73,7 @@ require('lazy').setup({
   'neovim/nvim-lspconfig',
   'jose-elias-alvarez/nvim-lsp-ts-utils',
   'MunifTanjim/prettier.nvim',
+  "j-hui/fidget.nvim",
 }, {})
 
 
@@ -236,8 +237,7 @@ end
 -- Setup LSP for intelephense
 lspconfig.intelephense.setup {
   on_attach = function(client, bufnr)
-    print("Intelephense LSP attached to buffer " .. bufnr)
-    -- Additional configuration if needed
+    -- Addtional setup here
   end,
   flags = {
     debounce_text_changes = 150,
@@ -255,8 +255,7 @@ lspconfig.intelephense.setup {
 -- Setup LSP for phpactor
 lspconfig.phpactor.setup {
   on_attach = function(client, bufnr)
-    print("Phpactor LSP attached to buffer " .. bufnr)
-    -- Additional configuration if needed
+    -- Addtional setup here
   end,
   flags = {
     debounce_text_changes = 150,
