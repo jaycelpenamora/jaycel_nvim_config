@@ -2,7 +2,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.codeium_enabled = false
-
+vim.g.copilot_enabled = false
 
 -- Install `lazy.nvim` plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -25,6 +25,7 @@ require('lazy').setup({
   { 'theHamsta/nvim-dap-virtual-text', dependencies = { 'mfussenegger/nvim-dap' } },
   { "rcarriga/nvim-dap-ui",            dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
   'williamboman/mason.nvim',
+  'williamboman/mason-lspconfig.nvim',
   'jay-babu/mason-nvim-dap.nvim',
 
   -- Plugin Folder --
@@ -74,6 +75,18 @@ require('lazy').setup({
   'MunifTanjim/prettier.nvim',
 }, {})
 
+
+-- [[ Mason nvim dap]]
+require("mason").setup()
+require('mason-nvim-dap').setup {
+  automatic_setup = true,
+  handlers = {
+    function(config)
+      require('mason-nvim-dap').default_setup(config)
+    end,
+  },
+}
+
 -- PHP Debug Adapter Protocol (DAP) Configuration
 local dap = require('dap')
 local dapui = require('dapui')
@@ -92,49 +105,6 @@ dap.configurations.php = {
     port = 9003,
     hostname = '0.0.0.0',
   }
-}
-
--- [[ Mason nvim dap]]
-require("mason").setup()
-require('mason-nvim-dap').setup {
-  automatic_setup = true,
-  handlers = {
-    function(config)
-      require('mason-nvim-dap').default_setup(config)
-    end,
-    php = function(config)
-      -- config.adapters = {
-      --   type = 'executable',
-      --   command = 'node',
-      --   args = {
-      --     '/home/jaycel/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js',
-      --   }
-      -- }
-      config.configurations = {
-        {
-          name = "Listen for Xdebug",
-          type = "php",
-          request = "launch",
-          port = 9003,
-          -- localSourceRoot = "/home/user/sites/vvv/www",
-          -- serverSourceRoot = "/srv/www",
-          localSourceRoot = vim.fn.expand("%:p:h") .. "/",
-          serverSourceRoot = vim.fn.expand("%:p:h") .. "/",
-          hostname = '0.0.0.0',
-        },
-        -- {
-        --   name = "Run current script",
-        --   type = "php",
-        --   request = "launch",
-        --   port = 9003,
-        --   cwd = "${fileDirname}",
-        --   program = "${file}",
-        --   runtimeExecutable = "php",
-        -- },
-      }
-      require('mason-nvim-dap').default_setup(config)
-    end,
-  },
 }
 
 function InsertXDebug()
@@ -218,7 +188,16 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 local mason_lspconfig = require 'mason-lspconfig'
 
 mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
+  ensure_installed = {
+    'clangd',
+    'html',
+    'lua_ls',
+    'phpactor',
+    'intelephense',
+    'pyright',
+    'rust_analyzer',
+    'tsserver',
+  },
 }
 
 mason_lspconfig.setup_handlers {
@@ -235,6 +214,7 @@ mason_lspconfig.setup_handlers {
 -- Setup LSP
 local lspconfig = require('lspconfig')
 
+-- Setup LSP for EMMET
 lspconfig.emmet_language_server.setup {
   on_attach = function(client, bufnr)
     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -250,6 +230,42 @@ lspconfig.emmet_language_server.setup {
     }
   }
 }
+-- Root directory detection function
+local function get_php_root_dir(fname)
+  return require('lspconfig.util').root_pattern('composer.json', '.git')(fname) or vim.fn.getcwd()
+end
+-- Setup LSP for intelephense
+lspconfig.intelephense.setup {
+  on_attach = function(client, bufnr)
+    print("Intelephense LSP attached to buffer " .. bufnr)
+    -- Additional configuration if needed
+  end,
+  flags = {
+    debounce_text_changes = 150,
+  },
+  root_dir = get_php_root_dir,
+  settings = {
+    intelephense = {
+      files = {
+        maxSize = 5000000, -- Adjust max file size if needed
+      },
+    },
+  },
+}
+
+-- Setup LSP for phpactor
+lspconfig.phpactor.setup {
+  on_attach = function(client, bufnr)
+    print("Phpactor LSP attached to buffer " .. bufnr)
+    -- Additional configuration if needed
+  end,
+  flags = {
+    debounce_text_changes = 150,
+  },
+  root_dir = get_php_root_dir,
+}
+
+
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -273,6 +289,10 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
+    ['<C-e>'] = cmp.mapping({
+      i = cmp.mapping.abort(), -- Hide the completion menu in insert mode
+      c = cmp.mapping.close(), -- Hide the completion menu in command mode
+    }),
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
@@ -299,7 +319,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
-    -- { name = 'codeium' },
+    { name = 'codeium' },
     { name = 'path' },
   },
 }
@@ -321,6 +341,7 @@ prettier.setup({
     "scss",
     "typescript",
     "typescriptreact",
+    "php",
     "yaml",
   },
 })

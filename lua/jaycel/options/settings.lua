@@ -1,6 +1,5 @@
 -- [[ Setting options ]]
 -- See `:help vim.o`
-
 -- Set highlight on search
 vim.o.hlsearch = false
 
@@ -78,6 +77,13 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
 
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	pattern = { "*.php", "*.inc" },
+	callback = function()
+		vim.bo.filetype = "php"
+	end,
+})
+
 --For vim-closetag
 vim.g.closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.tsx,*.js,*.ts,*.jsx"
 vim.g.closetag_xhtml_filenames = "*.html,*.xhtml,*.phtml,*.php,*.jsx,*.tsx,*.js,*.ts,*.jsx"
@@ -91,12 +97,7 @@ vim.g.closetag_regions = {
 	['javascript.jsx'] = 'jsxRegion',
 	['php'] = 'phpRegion',
 }
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-	pattern = { "*.php" },
-	callback = function()
-		vim.bo.filetype = "phpfile.php"
-	end,
-})
+
 -- Prettier configuration
 vim.g['prettier#autoformat'] = 1
 vim.g['prettier#autoformat_config_present'] = 1
