@@ -195,7 +195,6 @@ mason_lspconfig.setup {
     'pyright',
     'intelephense',
     'phpactor',
-    ''
   },
 }
 
