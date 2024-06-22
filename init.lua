@@ -193,8 +193,9 @@ mason_lspconfig.setup {
     'html',
     'lua_ls',
     'pyright',
-    'rust_analyzer',
-    'tsserver',
+    'intelephense',
+    'phpactor',
+    ''
   },
 }
 
