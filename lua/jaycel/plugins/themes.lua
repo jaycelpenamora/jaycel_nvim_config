@@ -8,9 +8,9 @@ return {
         transparency = false,
         color_overrides = {
           macchiato = {
-            base = "#191B20",
-            mantle = "#191B20",
-            crust = "#191B20",
+            base = "#171717",
+            mantle = "#171717",
+            crust = "#171717",
           }
         },
         integrations = {

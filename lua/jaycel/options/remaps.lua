@@ -2,6 +2,10 @@
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+vim.keymap.set('n', '<leader>yn', function()
+	vim.fn.setreg('+', vim.fn.expand('%:t'))
+end, { desc = 'Yank filename to clipboard', silent = true })
+
 
 -- Keymaps from Primeagen
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
