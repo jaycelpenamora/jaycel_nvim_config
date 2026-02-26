@@ -253,7 +253,6 @@ cmp.setup {
   },
 }
 
-
 -- [[ Configure Prettier ]]
 local prettier = require("prettier")
 
@@ -282,5 +281,3 @@ require("colorizer").setup({
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
--- vim: ts=2 sts=2 sw=2 et sts=2 sw=2 et
